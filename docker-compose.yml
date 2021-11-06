@@ -1,0 +1,19 @@
+version: "3.7"
+
+services:
+  mariadb:
+    container_name: mariadb_house
+    image: mariadb/server
+    environment:
+      MARIADB_ROOT_PASSWORD: "house"
+      MARIADB_ROOT_HOST: '%'
+      MARIADB_USER: "house"
+      MARIADB_PASSWORD: "house"
+      MARIADB_DATABASE: "house"
+    ports:
+      - "3306:3306"
+    command:
+      - "mysqld"
+      - "--character-set-server=utf8mb4"
+      - "--collation-server=utf8mb4_unicode_ci"
+
