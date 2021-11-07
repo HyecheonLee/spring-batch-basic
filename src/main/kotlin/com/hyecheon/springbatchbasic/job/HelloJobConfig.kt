@@ -18,7 +18,7 @@ import org.springframework.context.annotation.Configuration
  * Date: 2021/11/06
  */
 @Configuration
-class JobConfig(
+class HelloJobConfig(
 	private val jobBuilderFactory: JobBuilderFactory,
 	private val stepBuilderFactory: StepBuilderFactory
 ) {

@@ -10,13 +10,13 @@ import javax.persistence.*
  */
 @Entity
 @DynamicUpdate
-@Table(name = "plain_text")
-class PlainText(text: String) {
+@Table(name = "result_text")
+class ResultText(text: String) {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	val id: Long? = null
 
-	@Column(nullable = false, name = "plain_text")
+	@Column(nullable = false)
 	var text: String = text
 		private set
 
