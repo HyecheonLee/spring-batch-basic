@@ -20,7 +20,6 @@ spring:
     generate-ddl: false
     hibernate:
       ddl-auto: update
-    database: mysql
   batch:
     jdbc:
       initialize-schema: always
