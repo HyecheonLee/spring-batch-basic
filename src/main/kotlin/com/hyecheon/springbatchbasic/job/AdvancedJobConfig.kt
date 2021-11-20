@@ -2,6 +2,9 @@ package com.hyecheon.springbatchbasic.job
 
 import com.hyecheon.springbatchbasic.job.validate.LocalDateParameterValidator
 import org.slf4j.LoggerFactory
+import org.springframework.batch.core.BatchStatus
+import org.springframework.batch.core.JobExecution
+import org.springframework.batch.core.JobExecutionListener
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory
 import org.springframework.batch.core.configuration.annotation.JobScope
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory
@@ -30,8 +33,27 @@ class AdvancedJobConfig(
 		jobBuilderFactory.get("advancedJob")
 			.incrementer(RunIdIncrementer())
 			.validator(LocalDateParameterValidator("targetDate"))
+			.listener(jobExecutionListener())
 			.start(advancedStep())
 			.build()
+	}
+
+	@JobScope
+	@Bean
+	fun jobExecutionListener() = run {
+		object : JobExecutionListener {
+			override fun beforeJob(jobExecution: JobExecution) {
+				log.info("[JobExecutionListener#before] jobExecution is ${jobExecution.status}")
+			}
+
+			override fun afterJob(jobExecution: JobExecution) {
+				if (jobExecution.status == BatchStatus.FAILED) {
+					log.error("[JobExecutionListener#after] jobExecution is ${jobExecution.status}!!! Recovery")
+				} else {
+					log.info("[JobExecutionListener#after] jobExecution is ${jobExecution.status}")
+				}
+			}
+		}
 	}
 
 	@JobScope
