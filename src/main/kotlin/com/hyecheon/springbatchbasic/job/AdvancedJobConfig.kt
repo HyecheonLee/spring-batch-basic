@@ -2,9 +2,7 @@ package com.hyecheon.springbatchbasic.job
 
 import com.hyecheon.springbatchbasic.job.validate.LocalDateParameterValidator
 import org.slf4j.LoggerFactory
-import org.springframework.batch.core.BatchStatus
-import org.springframework.batch.core.JobExecution
-import org.springframework.batch.core.JobExecutionListener
+import org.springframework.batch.core.*
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory
 import org.springframework.batch.core.configuration.annotation.JobScope
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory
@@ -29,11 +27,11 @@ class AdvancedJobConfig(
 	private val log = LoggerFactory.getLogger(this::class.java)
 
 	@Bean
-	fun advancedJob() = run {
+	fun advancedJob(jobExecutionListener: JobExecutionListener? = null) = run {
 		jobBuilderFactory.get("advancedJob")
 			.incrementer(RunIdIncrementer())
 			.validator(LocalDateParameterValidator("targetDate"))
-			.listener(jobExecutionListener())
+			.listener(jobExecutionListener!!)
 			.start(advancedStep())
 			.build()
 	}
@@ -58,10 +56,26 @@ class AdvancedJobConfig(
 
 	@JobScope
 	@Bean
-	fun advancedStep() = run {
+	fun advancedStep(stepExecutionListener: StepExecutionListener? = null) = run {
 		stepBuilderFactory.get("advancedStep")
+			.listener(stepExecutionListener!!)
 			.tasklet(advancedTasklet())
 			.build()
+	}
+
+	@StepScope
+	@Bean
+	fun stepExecutionListener() = run {
+		object : StepExecutionListener {
+			override fun beforeStep(stepExecution: StepExecution) {
+				log.info("[StepExecutionListener#beforeStep] stepExecution is ${stepExecution.status}")
+			}
+
+			override fun afterStep(stepExecution: StepExecution): ExitStatus? {
+				log.info("[StepExecutionListener#afterStep] stepExecution is ${stepExecution.status}")
+				return stepExecution.exitStatus
+			}
+		}
 	}
 
 	@StepScope
