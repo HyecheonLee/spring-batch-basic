@@ -36,6 +36,8 @@ dependencies {
 	testImplementation("org.springframework.batch:spring-batch-test")
 
 	testRuntimeOnly("com.h2database:h2")
+
+	testImplementation("org.mockito:mockito-inline:3.8.0")
 }
 
 tasks.withType<KotlinCompile> {

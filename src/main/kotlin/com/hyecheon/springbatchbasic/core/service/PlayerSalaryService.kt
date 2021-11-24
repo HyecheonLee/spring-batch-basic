@@ -14,7 +14,7 @@ import java.time.Year
 class PlayerSalaryService {
 
 	fun calcSalary(player: PlayerDto) = run {
-		val salary = Year.now().value - player.birthYear
+		val salary = (Year.now().value - player.birthYear) * 1000000
 		PlayerSalaryDto.of(player, salary)
 	}
 }
